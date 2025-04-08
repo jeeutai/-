@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>기후변화 퀴즈 - 포도맛 폴라포</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #091e36;
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .team-name {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 24px;
+            color: #a64ac9;
+            text-shadow: 0 0 5px rgba(166, 74, 201, 0.5);
+        }
+        
+        .sidebar {
+            position: fixed;
+            top: 60px;
+            right: 0;
+            width: 180px;
+            height: calc(100vh - 60px);
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            z-index: 99;
+        }
+        
+        .sidebar h3 {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #17e9e0;
+        }
+        
+        .team-score {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .score-buttons {
+            display: flex;
+        }
+        
+        .score-btn {
+            width: 25px;
+            height: 25px;
+            margin: 0 2px;
+            border: none;
+            background-color: #a64ac9;
+            color: white;
+            cursor: pointer;
+            border-radius: 50%;
+            font-weight: bold;
+        }
+        
+        .score-btn:hover {
+            background-color: #17e9e0;
+        }
+        
+        .main-container {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 80px 200px 60px 20px;
+        }
+        
+        .quiz-container {
+            width: 100%;
+            max-width: 1200px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 20px;
+            border: 2px solid #17e9e0;
+            padding: 40px;
+        }
+        
+        .quiz-title {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 2.5em;
+            color: #17e9e0;
+            text-align: center;
+            margin-bottom: 40px;
+            text-shadow: 0 0 10px rgba(23, 233, 224, 0.5);
+        }
+        
+        .quiz-section {
+            background: rgba(166, 74, 201, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .quiz-section h3 {
+            color: #17e9e0;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+        
+        .quiz-question {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            color: white;
+        }
+        
+        .quiz-options {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .quiz-option {
+            background: rgba(166, 74, 201, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.1em;
+        }
+        
+        .quiz-option:hover {
+            background: rgba(166, 74, 201, 0.5);
+            transform: translateX(10px);
+        }
+        
+        .nav-arrows {
+            position: fixed;
+            bottom: 50%;
+            left: 20px;
+            transform: translateY(50%);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 1000;
+        }
+        
+        .arrow-btn {
+            background-color: rgba(166, 74, 201, 0.7);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .arrow-btn:hover {
+            background-color: rgba(23, 233, 224, 0.7);
+            transform: scale(1.1);
+        }
+        
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(166, 74, 201, 0.3);
+            animation: float 15s linear infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0); }
+            100% { transform: translateY(-100vh) rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div id="particles"></div>
+    
+    <div class="header">
+        <div class="team-name">포도맛 폴라포</div>
+        <div class="navigation">
+            <span id="page-title">기후변화 퀴즈</span>
+        </div>
+    </div>
+    
+    <div class="sidebar">
+        <h3>팀 점수판</h3>
+        <div id="score-container">
+            <!-- 점수판 내용은 JavaScript로 생성됩니다 -->
+        </div>
+    </div>
+    
+    <div class="main-container">
+        <div class="quiz-container">
+            <h2 class="quiz-title">기후변화 퀴즈</h2>
+            
+            <div class="quiz-section">
+                <h3>기후변화 이해</h3>
+                <div class="quiz-item">
+                    <p class="quiz-question">1. 기후변화의 가장 큰 원인은 무엇인가요?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="checkAnswer(1, 4)">자연적인 기후 변화</div>
+                        <div class="quiz-option" onclick="checkAnswer(1, 4)">태양 활동의 변화</div>
+                        <div class="quiz-option" onclick="checkAnswer(1, 4)">화산 활동</div>
+                        <div class="quiz-option" onclick="checkAnswer(1, 4)">인간 활동으로 인한 온실가스 배출</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-item">
+                    <p class="quiz-question">2. 지구의 평균 기온이 산업화 이전 대비 얼마나 상승했나요?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="checkAnswer(2, 1)">약 1.1°C</div>
+                        <div class="quiz-option" onclick="checkAnswer(2, 1)">약 2.5°C</div>
+                        <div class="quiz-option" onclick="checkAnswer(2, 1)">약 0.5°C</div>
+                        <div class="quiz-option" onclick="checkAnswer(2, 1)">약 3.0°C</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-item">
+                    <p class="quiz-question">3. 가장 강력한 온실가스는 무엇인가요?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="checkAnswer(3, 2)">이산화탄소(CO2)</div>
+                        <div class="quiz-option" onclick="checkAnswer(3, 2)">메탄(CH4)</div>
+                        <div class="quiz-option" onclick="checkAnswer(3, 2)">수증기(H2O)</div>
+                        <div class="quiz-option" onclick="checkAnswer(3, 2)">일산화질소(N2O)</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="quiz-section">
+                <h3>기후변화의 영향</h3>
+                <div class="quiz-item">
+                    <p class="quiz-question">4. 기후변화로 인해 가장 위험에 처한 생태계는 무엇인가요?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="checkAnswer(4, 1)">산호초</div>
+                        <div class="quiz-option" onclick="checkAnswer(4, 1)">사막</div>
+                        <div class="quiz-option" onclick="checkAnswer(4, 1)">열대우림</div>
+                        <div class="quiz-option" onclick="checkAnswer(4, 1)">초원</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-item">
+                    <p class="quiz-question">5. 기후변화로 인한 해수면 상승의 주요 원인은 무엇인가요?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="checkAnswer(5, 3)">해양 오염</div>
+                        <div class="quiz-option" onclick="checkAnswer(5, 3)">해류의 변화</div>
+                        <div class="quiz-option" onclick="checkAnswer(5, 3)">빙하와 얼음의 융해</div>
+                        <div class="quiz-option" onclick="checkAnswer(5, 3)">해양 생물의 감소</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-item">
+                    <p class="quiz-question">6. 기후변화로 인해 가장 심각한 영향을 받는 지역은 어디인가요?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="checkAnswer(6, 4)">유럽</div>
+                        <div class="quiz-option" onclick="checkAnswer(6, 4)">북미</div>
+                        <div class="quiz-option" onclick="checkAnswer(6, 4)">아시아</div>
+                        <div class="quiz-option" onclick="checkAnswer(6, 4)">아프리카</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="quiz-section">
+                <h3>기후변화의 사례</h3>
+                <div class="quiz-item">
+                    <p class="quiz-question">7. 2019-2020년 호주 산불로 인해 희생된 동물의 수는?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="checkAnswer(7, 1)">약 10억 마리</div>
+                        <div class="quiz-option" onclick="checkAnswer(7, 1)">약 5천만 마리</div>
+                        <div class="quiz-option" onclick="checkAnswer(7, 1)">약 1억 마리</div>
+                        <div class="quiz-option" onclick="checkAnswer(7, 1)">약 2천만 마리</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-item">
+                    <p class="quiz-question">8. 북극 빙하의 면적이 1979년 이후 얼마나 감소했나요?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="checkAnswer(8, 2)">20% 이상</div>
+                        <div class="quiz-option" onclick="checkAnswer(8, 2)">40% 이상</div>
+                        <div class="quiz-option" onclick="checkAnswer(8, 2)">30% 이상</div>
+                        <div class="quiz-option" onclick="checkAnswer(8, 2)">50% 이상</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-item">
+                    <p class="quiz-question">9. 말라위의 가뭄으로 인해 영향을 받은 사람들의 수는?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="checkAnswer(9, 3)">수십만 명</div>
+                        <div class="quiz-option" onclick="checkAnswer(9, 3)">수천만 명</div>
+                        <div class="quiz-option" onclick="checkAnswer(9, 3)">수백만 명</div>
+                        <div class="quiz-option" onclick="checkAnswer(9, 3)">수만 명</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="quiz-section">
+                <h3>기후변화 해결방안</h3>
+                <div class="quiz-item">
+                    <p class="quiz-question">10. 가장 효과적인 기후변화 대응 방법은 무엇인가요?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="checkAnswer(10, 4)">개인의 노력</div>
+                        <div class="quiz-option" onclick="checkAnswer(10, 4)">기업의 노력</div>
+                        <div class="quiz-option" onclick="checkAnswer(10, 4)">정부의 노력</div>
+                        <div class="quiz-option" onclick="checkAnswer(10, 4)">모든 주체의 협력</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-item">
+                    <p class="quiz-question">11. 재생에너지 중 가장 발전 잠재력이 높은 것은 무엇인가요?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="checkAnswer(11, 1)">태양광</div>
+                        <div class="quiz-option" onclick="checkAnswer(11, 1)">풍력</div>
+                        <div class="quiz-option" onclick="checkAnswer(11, 1)">수력</div>
+                        <div class="quiz-option" onclick="checkAnswer(11, 1)">지열</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-item">
+                    <p class="quiz-question">12. 탄소 중립을 달성하기 위한 가장 효과적인 방법은 무엇인가요?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="checkAnswer(12, 2)">나무 심기</div>
+                        <div class="quiz-option" onclick="checkAnswer(12, 2)">에너지 사용량 감소</div>
+                        <div class="quiz-option" onclick="checkAnswer(12, 2)">대중교통 이용</div>
+                        <div class="quiz-option" onclick="checkAnswer(12, 2)">쓰레기 줄이기</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="quiz-section">
+                <h3>기후변화의 미래</h3>
+                <div class="quiz-item">
+                    <p class="quiz-question">13. 2100년까지 예상되는 지구 평균 기온 상승폭은?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="checkAnswer(13, 3)">1.5°C</div>
+                        <div class="quiz-option" onclick="checkAnswer(13, 3)">2.0°C</div>
+                        <div class="quiz-option" onclick="checkAnswer(13, 3)">2.5°C</div>
+                        <div class="quiz-option" onclick="checkAnswer(13, 3)">3.0°C</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-item">
+                    <p class="quiz-question">14. 기후변화로 인해 가장 먼저 사라질 것으로 예상되는 생물은?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="checkAnswer(14, 4)">북극곰</div>
+                        <div class="quiz-option" onclick="checkAnswer(14, 4)">펭귄</div>
+                        <div class="quiz-option" onclick="checkAnswer(14, 4)">고래</div>
+                        <div class="quiz-option" onclick="checkAnswer(14, 4)">산호</div>
+                    </div>
+                </div>
+                
+                <div class="quiz-item">
+                    <p class="quiz-question">15. 기후변화를 막기 위한 마지막 기회는 언제까지인가요?</p>
+                    <div class="quiz-options">
+                        <div class="quiz-option" onclick="checkAnswer(15, 1)">2030년까지</div>
+                <h3>기후변화 대응</h3>
+                <div class="quiz-question">Q16. 기후변화 대응을 위한 가장 효과적인 방법은?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="checkAnswer(3, 1)">1. 개인의 생활습관 개선</div>
+                    <div class="quiz-option" onclick="checkAnswer(3, 2)">2. 기업의 환경 정책</div>
+                    <div class="quiz-option" onclick="checkAnswer(3, 3)">3. 정부의 규제</div>
+                    <div class="quiz-option" onclick="checkAnswer(3, 4)">4. 모든 이해관계자의 협력</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="nav-arrows">
+        <button class="arrow-btn" title="이전 페이지" onclick="location.href='solutions.html'">◀</button>
+        <button class="arrow-btn" title="다음 페이지" onclick="location.href='winner.html'">▶</button>
+    </div>
+
+    <div class="sound-control" onclick="toggleSound()">
+        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSI+PHBhdGggZD0iTTMgOXY2aDRsNSA1VjRMNyA5SDN6bTEzLjUgM2MwLTEuNzctMS4wMi0zLjI5LTIuNS00LjAzdjguMDVjMS40OC0uNzMgMi41LTIuMjUgMi41LTQuMDJ6TTE0IDMuMjN2Mi4wNmMyLjg5Ljg2IDUgMy41NCA1IDYuNzFzLTIuMTEgNS44NS01IDYuNzF2Mi4wNmM0LjAxLS45MSA3LTQuNDkgNy04Ljc3cy0yLjk5LTcuODYtNy04Ljc3eiIvPjwvc3ZnPg==" alt="음악 제어" id="soundIcon">
+    </div>
+
+    <audio id="bgMusic" loop>
+        <source src="music.mp3" type="audio/mpeg">
+    </audio>
+    
+    <script>
+        // 팀 점수판 생성
+        const scoreContainer = document.getElementById('score-container');
+        
+        for (let i = 1; i <= 10; i++) {
+            const teamScore = document.createElement('div');
+            teamScore.className = 'team-score';
+            
+            const teamName = document.createElement('span');
+            teamName.textContent = `${i}팀`;
+            
+            const scoreValue = document.createElement('span');
+            scoreValue.textContent = '0';
+            scoreValue.id = `team-${i}-score`;
+            
+            const scoreButtons = document.createElement('div');
+            scoreButtons.className = 'score-buttons';
+            
+            const minusBtn = document.createElement('button');
+            minusBtn.className = 'score-btn';
+            minusBtn.textContent = '-';
+            minusBtn.onclick = function() {
+                updateScore(i, -1);
+            };
+            
+            const plusBtn = document.createElement('button');
+            plusBtn.className = 'score-btn';
+            plusBtn.textContent = '+';
+            plusBtn.onclick = function() {
+                updateScore(i, 1);
+            };
+            
+            scoreButtons.appendChild(minusBtn);
+            scoreButtons.appendChild(plusBtn);
+            
+            teamScore.appendChild(teamName);
+            teamScore.appendChild(scoreValue);
+            teamScore.appendChild(scoreButtons);
+            
+            scoreContainer.appendChild(teamScore);
+        }
+        
+        // 점수 업데이트 함수
+        function updateScore(teamNum, change) {
+            const scoreElem = document.getElementById(`team-${teamNum}-score`);
+            let currentScore = parseInt(scoreElem.textContent);
+            currentScore += change;
+            
+            if (currentScore < 0) currentScore = 0;
+            
+            scoreElem.textContent = currentScore;
+            localStorage.setItem(`team-${teamNum}-score`, currentScore);
+        }
+        
+        // 저장된 점수 불러오기
+        for (let i = 1; i <= 10; i++) {
+            const savedScore = localStorage.getItem(`team-${i}-score`);
+            if (savedScore) {
+                document.getElementById(`team-${i}-score`).textContent = savedScore;
+            }
+        }
+        
+        // 퀴즈 정답 체크 (자동 점수 증가 없이 정답만 알려줌)
+        function checkAnswer(quizNum, answer) {
+            const correctAnswers = {
+                1: 2, // 첫 번째 퀴즈의 정답은 2번
+                2: 3, // 두 번째 퀴즈의 정답은 3번
+                3: 4  // 세 번째 퀴즈의 정답은 4번
+            };
+            
+            if (answer === correctAnswers[quizNum]) {
+                alert('정답입니다!');
+            } else {
+                alert('틀렸습니다. 다시 생각해보세요!');
+            }
+        }
+        
+        // 배경 파티클 생성
+        const particlesContainer = document.getElementById('particles');
+        
+        for (let i = 0; i < 20; i++) {
+            createParticle();
+        }
+        
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            
+            const size = Math.random() * 30 + 10;
+            const left = Math.random() * 100;
+            const duration = Math.random() * 15 + 5;
+            const delay = Math.random() * 5;
+            
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.left = `${left}%`;
+            particle.style.bottom = '-50px';
+            particle.style.opacity = Math.random() * 0.5 + 0.1;
+            particle.style.animationDuration = `${duration}s`;
+            particle.style.animationDelay = `${delay}s`;
+            
+            particlesContainer.appendChild(particle);
+            
+            setTimeout(() => {
+                particle.remove();
+                createParticle();
+            }, (duration + delay) * 1000);
+        }
+
+        // 배경음악 제어
+        const bgMusic = document.getElementById('bgMusic');
+        const soundIcon = document.getElementById('soundIcon');
+        let isSoundOn = false;
+        
+        function toggleSound() {
+            if (isSoundOn) {
+                bgMusic.pause();
+                soundIcon.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSI+PHBhdGggZD0iTTE2LjUgMTJjMC0xLjc3LTEuMDItMy4yOS0yLjUtNC4wM3Y4LjA1YzEuNDgtLjczIDIuNS0yLjI1IDIuNS00LjAyek0zIDl2Nmg0bDUgNVY0TDcgOUgzeiIvPjxwYXRoIGQ9Ik0xNCAzLjIzdjIuMDZjMi44OS44NiA1IDMuNTQgNSA2Ljcxcy0yLjExIDUuODUtNSA2LjcxdjIuMDZjNC4wMS0uOTEgNy00LjQ5IDctOC43N3MtMi45OS03Ljg2LTctOC43N3oiLz48L3N2Zz4=";
+            } else {
+                bgMusic.play();
+                soundIcon.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSI+PHBhdGggZD0iTTMgOXY2aDRsNSA1VjRMNyA5SDN6bTEzLjUgM2MwLTEuNzctMS4wMi0zLjI5LTIuNS00LjAzdjguMDVjMS40OC0uNzMgMi41LTIuMjUgMi41LTQuMDJ6TTE0IDMuMjN2Mi4wNmMyLjg5Ljg2IDUgMy41NCA1IDYuNzFzLTIuMTEgNS44NS01IDYuNzF2Mi4wNmM0LjAxLS45MSA3LTQuNDkgNy04Ljc3cy0yLjk5LTcuODYtNy04Ljc3eiIvPjwvc3ZnPg==";
+            }
+            isSoundOn = !isSoundOn;
+            localStorage.setItem('isMusicPlaying', isSoundOn);
+        }
+        
+        // 페이지 로드 시 음악 상태 복원
+        window.addEventListener('load', function() {
+            const isMusicPlaying = localStorage.getItem('isMusicPlaying') === 'true';
+            if (isMusicPlaying) {
+                bgMusic.play();
+                isSoundOn = true;
+                soundIcon.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSI+PHBhdGggZD0iTTMgOXY2aDRsNSA1VjRMNyA5SDN6bTEzLjUgM2MwLTEuNzctMS4wMi0zLjI5LTIuNS00LjAzdjguMDVjMS40OC0uNzMgMi41LTIuMjUgMi41LTQuMDJ6TTE0IDMuMjN2Mi4wNmMyLjg5Ljg2IDUgMy41NCA1IDYuNzFzLTIuMTEgNS44NS01IDYuNzF2Mi4wNmM0LjAxLS45MSA3LTQuNDkgNy04Ljc3cy0yLjk5LTcuODYtNy04Ljc3eiIvPjwvc3ZnPg==";
+            }
+        });
+    </script>
+</body>
+</html> 

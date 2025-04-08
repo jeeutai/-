@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>감사합니다 - 포도맛 폴라포</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #091e36;
+            color: white;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .thanks-container {
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+            max-width: 1200px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .team-name {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 3em;
+            color: #a64ac9;
+            text-shadow: 0 0 10px rgba(166, 74, 201, 0.5);
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .thanks-title {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 4.5em;
+            color: #17e9e0;
+            text-shadow: 0 0 15px rgba(23, 233, 224, 0.5);
+            margin-bottom: 40px;
+        }
+        
+        .message {
+            font-size: 1.8em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+        
+        .highlight {
+            color: #17e9e0;
+            font-weight: bold;
+        }
+        
+        .restart-btn {
+            padding: 15px 40px;
+            font-size: 1.5em;
+            background: rgba(166, 74, 201, 0.7);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 30px;
+        }
+        
+        .restart-btn:hover {
+            background: rgba(23, 233, 224, 0.7);
+            transform: scale(1.1);
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(166, 74, 201, 0.3);
+            animation: particleFloat 15s linear infinite;
+        }
+        
+        @keyframes particleFloat {
+            0% { transform: translateY(0) rotate(0); }
+            100% { transform: translateY(-100vh) rotate(360deg); }
+        }
+        
+        .nav-arrows {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 30px;
+        }
+        
+        .arrow-btn {
+            background-color: rgba(166, 74, 201, 0.7);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .arrow-btn:hover {
+            background-color: rgba(23, 233, 224, 0.7);
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <div id="particles"></div>
+    
+    <div class="thanks-container">
+        <div class="team-name">포도맛 폴라포</div>
+        <h1 class="thanks-title">감사합니다</h1>
+        <p class="message">
+            기후변화 탐험에 함께해 주셔서 감사합니다<br>
+            <span class="highlight">우리 모두가 지구를 지키는 주인공</span>입니다<br>
+            작은 실천으로 시작하는 큰 변화,<br>
+            함께라면 할 수 있습니다!
+        </p>
+        <button class="restart-btn" onclick="location.href='index.html'">처음으로</button>
+    </div>
+    
+    <div class="nav-arrows">
+        <button class="arrow-btn" title="이전 페이지" onclick="location.href='winner.html'">◀</button>
+    </div>
+
+    <div class="sound-control" onclick="toggleSound()">
+        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSI+PHBhdGggZD0iTTMgOXY2aDRsNSA1VjRMNyA5SDN6bTEzLjUgM2MwLTEuNzctMS4wMi0zLjI5LTIuNS00LjAzdjguMDVjMS40OC0uNzMgMi41LTIuMjUgMi41LTQuMDJ6TTE0IDMuMjN2Mi4wNmMyLjg5Ljg2IDUgMy41NCA1IDYuNzFzLTIuMTEgNS44NS01IDYuNzF2Mi4wNmM0LjAxLS45MSA3LTQuNDkgNy04Ljc3cy0yLjk5LTcuODYtNy04Ljc3eiIvPjwvc3ZnPg==" alt="음악 제어" id="soundIcon">
+    </div>
+
+    <audio id="bgMusic" loop>
+        <source src="music.mp3" type="audio/mpeg">
+    </audio>
+    
+    <script>
+        const particlesContainer = document.getElementById('particles');
+        
+        for (let i = 0; i < 20; i++) {
+            createParticle();
+        }
+        
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            
+            const size = Math.random() * 30 + 10;
+            const left = Math.random() * 100;
+            const duration = Math.random() * 15 + 5;
+            const delay = Math.random() * 5;
+            
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.left = `${left}%`;
+            particle.style.bottom = '-50px';
+            particle.style.opacity = Math.random() * 0.5 + 0.1;
+            particle.style.animationDuration = `${duration}s`;
+            particle.style.animationDelay = `${delay}s`;
+            
+            particlesContainer.appendChild(particle);
+            
+            setTimeout(() => {
+                particle.remove();
+                createParticle();
+            }, (duration + delay) * 1000);
+        }
+
+        // 배경음악 제어
+        const bgMusic = document.getElementById('bgMusic');
+        const soundIcon = document.getElementById('soundIcon');
+        let isSoundOn = false;
+        
+        function toggleSound() {
+            if (isSoundOn) {
+                bgMusic.pause();
+                soundIcon.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSI+PHBhdGggZD0iTTE2LjUgMTJjMC0xLjc3LTEuMDItMy4yOS0yLjUtNC4wM3Y4LjA1YzEuNDgtLjczIDIuNS0yLjI1IDIuNS00LjAyek0zIDl2Nmg0bDUgNVY0TDcgOUgzeiIvPjxwYXRoIGQ9Ik0xNCAzLjIzdjIuMDZjMi44OS44NiA1IDMuNTQgNSA2Ljcxcy0yLjExIDUuODUtNSA2LjcxdjIuMDZjNC4wMS0uOTEgNy00LjQ5IDctOC43N3MtMi45OS03Ljg2LTctOC43N3oiLz48L3N2Zz4=";
+            } else {
+                bgMusic.play();
+                soundIcon.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSI+PHBhdGggZD0iTTMgOXY2aDRsNSA1VjRMNyA5SDN6bTEzLjUgM2MwLTEuNzctMS4wMi0zLjI5LTIuNS00LjAzdjguMDVjMS40OC0uNzMgMi41LTIuMjUgMi41LTQuMDJ6TTE0IDMuMjN2Mi4wNmMyLjg5Ljg2IDUgMy41NCA1IDYuNzFzLTIuMTEgNS44NS01IDYuNzF2Mi4wNmM0LjAxLS45MSA3LTQuNDkgNy04Ljc3cy0yLjk5LTcuODYtNy04Ljc3eiIvPjwvc3ZnPg==";
+            }
+            isSoundOn = !isSoundOn;
+            localStorage.setItem('isMusicPlaying', isSoundOn);
+        }
+        
+        // 페이지 로드 시 음악 상태 복원
+        window.addEventListener('load', function() {
+            const isMusicPlaying = localStorage.getItem('isMusicPlaying') === 'true';
+            if (isMusicPlaying) {
+                bgMusic.play();
+                isSoundOn = true;
+                soundIcon.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSI+PHBhdGggZD0iTTMgOXY2aDRsNSA1VjRMNyA5SDN6bTEzLjUgM2MwLTEuNzctMS4wMi0zLjI5LTIuNS00LjAzdjguMDVjMS40OC0uNzMgMi41LTIuMjUgMi41LTQuMDJ6TTE0IDMuMjN2Mi4wNmMyLjg5Ljg2IDUgMy41NCA1IDYuNzFzLTIuMTEgNS44NS01IDYuNzF2Mi4wNmM0LjAxLS45MSA3LTQuNDkgNy04Ljc3cy0yLjk5LTcuODYtNy04Ljc3eiIvPjwvc3ZnPg==";
+            }
+        });
+    </script>
+</body>
+</html> 

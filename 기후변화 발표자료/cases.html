@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>기후변화의 사례 - 포도맛 폴라포</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #091e36;
+            color: white;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+        
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .team-name {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 24px;
+            color: #a64ac9;
+            text-shadow: 0 0 5px rgba(166, 74, 201, 0.5);
+        }
+        
+        .sidebar {
+            position: fixed;
+            top: 60px;
+            right: 0;
+            width: 180px;
+            height: calc(100vh - 60px);
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            z-index: 99;
+        }
+        
+        .sidebar h3 {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #17e9e0;
+        }
+        
+        .team-score {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .score-buttons {
+            display: flex;
+        }
+        
+        .score-btn {
+            width: 25px;
+            height: 25px;
+            margin: 0 2px;
+            border: none;
+            background-color: #a64ac9;
+            color: white;
+            cursor: pointer;
+            border-radius: 50%;
+            font-weight: bold;
+        }
+        
+        .score-btn:hover {
+            background-color: #17e9e0;
+        }
+        
+        .main-container {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 80px 200px 60px 80px;
+            width: 100%;
+        }
+        
+        .content-container {
+            width: 100%;
+            max-width: 1400px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 0 auto;
+        }
+        
+        .content-title {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 2em;
+            color: #17e9e0;
+            margin-bottom: 30px;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(23, 233, 224, 0.5);
+        }
+        
+        .case-slider {
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            padding: 20px;
+            margin-bottom: 80px;
+        }
+        
+        .case-slide {
+            width: 100%;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            text-align: center;
+        }
+        
+        .case-slide.active {
+            display: block;
+            opacity: 1;
+        }
+        
+        .case-image {
+            width: 100%;
+            max-width: 800px;
+            height: 450px;
+            margin: 0 auto 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+        
+        .case-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+        
+        .case-text {
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 1.2em;
+            line-height: 1.6;
+        }
+        
+        .case-title {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 2.5em;
+            color: #17e9e0;
+            margin: 20px 0;
+            text-shadow: 0 0 10px rgba(23, 233, 224, 0.5);
+        }
+        
+        .case-description {
+            background: rgba(23, 233, 224, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px auto 30px;
+            max-width: 800px;
+            position: relative;
+        }
+        
+        .case-source {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9em;
+            margin-top: 20px;
+        }
+        
+        .slider-controls {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .slider-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: rgba(23, 233, 224, 0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .slider-dot:hover {
+            background-color: rgba(23, 233, 224, 0.7);
+            transform: scale(1.2);
+        }
+        
+        .slider-dot.active {
+            background-color: rgba(23, 233, 224, 0.9);
+            transform: scale(1.2);
+            box-shadow: 0 0 10px rgba(23, 233, 224, 0.5);
+        }
+        
+        .quiz-container {
+            background: rgba(23, 233, 224, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+        
+        .quiz-question {
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #17e9e0;
+        }
+        
+        .quiz-options {
+            display: grid;
+            gap: 10px;
+        }
+        
+        .quiz-option {
+            background: rgba(166, 74, 201, 0.3);
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .quiz-option:hover {
+            background: rgba(166, 74, 201, 0.5);
+            transform: translateX(10px);
+        }
+        
+        .nav-arrows {
+            position: fixed;
+            bottom: 50%;
+            left: 20px;
+            transform: translateY(50%);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 1000;
+        }
+        
+        .arrow-btn {
+            background-color: rgba(166, 74, 201, 0.7);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 10px rgba(166, 74, 201, 0.3);
+        }
+        
+        .arrow-btn:hover {
+            background-color: rgba(166, 74, 201, 0.9);
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(166, 74, 201, 0.5);
+        }
+        
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(166, 74, 201, 0.3);
+            animation: float 15s linear infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0); }
+            100% { transform: translateY(-100vh) rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div id="particles"></div>
+    
+    <div class="header">
+        <div class="team-name">포도맛 폴라포</div>
+        <div class="navigation">
+            <span id="page-title">기후변화의 사례</span>
+        </div>
+    </div>
+    
+    <div class="sidebar">
+        <h3>팀 점수판</h3>
+        <div id="score-container">
+            <!-- 점수판 내용은 JavaScript로 생성됩니다 -->
+        </div>
+    </div>
+    
+    <div class="main-container">
+        <div class="content-container">
+            <h1 class="content-title">기후변화의 사례</h1>
+            
+            <div class="case-slider">
+                <div class="case-slide active">
+                    <div class="case-image">
+                        <img src="https://img1.daumcdn.net/thumb/R658x0.q70/?fname=https://t1.daumcdn.net/news/202303/14/akn/20230314121337908ipoj.jpg" alt="북극 빙하">
+                    </div>
+                    <div class="case-description">
+                        <h3 class="case-title">북극 빙하 감소</h3>
+                        <p>북극의 빙하 면적이 1979년 이후 40% 이상 감소했습니다. 이는 해수면 상승과 기후 변화를 가속화시키는 주요 요인입니다.</p>
+                        <p class="case-source">출처: https://v.daum.net/v/20230314121336168?f=p</p>
+                    </div>
+                </div>
+                <div class="case-slide">
+                    <div class="case-image">
+                        <img src="https://flexible.img.hani.co.kr/flexible/normal/970/546/imgdb/original/2021/0728/20210728500204.webp" alt="호주 산불">
+                    </div>
+                    <div class="case-description">
+                        <h3 class="case-title">호주 산불</h3>
+                        <p>2019-2020년 호주 산불은 기후변화로 인한 극심한 가뭄과 고온으로 발생했으며, 약 10억 마리의 동물이 희생되었습니다.</p>
+                        <p class="case-source">출처: https://www.hani.co.kr/arti/society/environment/1005446.html</p>
+                    </div>
+                </div>
+                <div class="case-slide">
+                    <div class="case-image">
+                        <img src="https://img.sbs.co.kr/newimg/news/20240819/201974289_1280.jpg" alt="말라위 가뭄">
+                    </div>
+                    <div class="case-description">
+                        <h3 class="case-title">말라위 가뭄</h3>
+                        <p>아프리카 말라위에서는 기후변화로 인한 가뭄으로 인해 수백만 명이 식량 위기에 처했습니다.</p>
+                        <p class="case-source">출처: https://news.sbs.co.kr/news/endPage.do?news_id=N1007767072</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="slider-controls">
+                <div class="slider-dot active" onclick="showSlide(0)"></div>
+                <div class="slider-dot" onclick="showSlide(1)"></div>
+                <div class="slider-dot" onclick="showSlide(2)"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="nav-arrows">
+        <button class="arrow-btn" title="이전 페이지" onclick="location.href='problems.html'">◀</button>
+        <button class="arrow-btn" title="다음 페이지" onclick="location.href='solutions.html'">▶</button>
+    </div>
+
+    <div class="sound-control" onclick="toggleSound()">
+        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSI+PHBhdGggZD0iTTMgOXY2aDRsNSA1VjRMNyA5SDN6bTEzLjUgM2MwLTEuNzctMS4wMi0zLjI5LTIuNS00LjAzdjguMDVjMS40OC0uNzMgMi41LTIuMjUgMi41LTQuMDJ6TTE0IDMuMjN2Mi4wNmMyLjg5Ljg2IDUgMy41NCA1IDYuNzFzLTIuMTEgNS44NS01IDYuNzF2Mi4wNmM0LjAxLS45MSA3LTQuNDkgNy04Ljc3cy0yLjk5LTcuODYtNy04Ljc3eiIvPjwvc3ZnPg==" alt="음악 제어" id="soundIcon">
+    </div>
+
+    <audio id="bgMusic" loop>
+        <source src="music.mp3" type="audio/mpeg">
+    </audio>
+    
+    <script>
+        // 팀 점수판 생성
+        const scoreContainer = document.getElementById('score-container');
+        
+        for (let i = 1; i <= 10; i++) {
+            const teamScore = document.createElement('div');
+            teamScore.className = 'team-score';
+            
+            const teamName = document.createElement('span');
+            teamName.textContent = `${i}팀`;
+            
+            const scoreValue = document.createElement('span');
+            scoreValue.textContent = '0';
+            scoreValue.id = `team-${i}-score`;
+            
+            const scoreButtons = document.createElement('div');
+            scoreButtons.className = 'score-buttons';
+            
+            const minusBtn = document.createElement('button');
+            minusBtn.className = 'score-btn';
+            minusBtn.textContent = '-';
+            minusBtn.onclick = function() {
+                updateScore(i, -1);
+            };
+            
+            const plusBtn = document.createElement('button');
+            plusBtn.className = 'score-btn';
+            plusBtn.textContent = '+';
+            plusBtn.onclick = function() {
+                updateScore(i, 1);
+            };
+            
+            scoreButtons.appendChild(minusBtn);
+            scoreButtons.appendChild(plusBtn);
+            
+            teamScore.appendChild(teamName);
+            teamScore.appendChild(scoreValue);
+            teamScore.appendChild(scoreButtons);
+            
+            scoreContainer.appendChild(teamScore);
+        }
+        
+        // 점수 업데이트 함수
+        function updateScore(teamNum, change) {
+            const scoreElem = document.getElementById(`team-${teamNum}-score`);
+            let currentScore = parseInt(scoreElem.textContent);
+            currentScore += change;
+            
+            // 점수는 0 미만으로 내려가지 않도록
+            if (currentScore < 0) currentScore = 0;
+            
+            scoreElem.textContent = currentScore;
+            
+            // 로컬 스토리지에 점수 저장
+            localStorage.setItem(`team-${teamNum}-score`, currentScore);
+        }
+        
+        // 저장된 점수 불러오기
+        for (let i = 1; i <= 10; i++) {
+            const savedScore = localStorage.getItem(`team-${i}-score`);
+            if (savedScore) {
+                document.getElementById(`team-${i}-score`).textContent = savedScore;
+            }
+        }
+        
+        // 슬라이더 기능
+        const slides = document.querySelectorAll('.case-slide');
+        const dots = document.querySelectorAll('.slider-dot');
+        let currentSlide = 0;
+        
+        function showSlide(index) {
+            slides[currentSlide].classList.remove('active');
+            dots[currentSlide].classList.remove('active');
+            
+            currentSlide = index;
+            
+            slides[currentSlide].classList.add('active');
+            dots[currentSlide].classList.add('active');
+        }
+        
+        // 배경 파티클 생성
+        const particlesContainer = document.getElementById('particles');
+        
+        for (let i = 0; i < 20; i++) {
+            createParticle();
+        }
+        
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            
+            const size = Math.random() * 30 + 10;
+            const left = Math.random() * 100;
+            const duration = Math.random() * 15 + 5;
+            const delay = Math.random() * 5;
+            
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.left = `${left}%`;
+            particle.style.bottom = '-50px';
+            particle.style.opacity = Math.random() * 0.5 + 0.1;
+            particle.style.animationDuration = `${duration}s`;
+            particle.style.animationDelay = `${delay}s`;
+            
+            particlesContainer.appendChild(particle);
+            
+            setTimeout(() => {
+                particle.remove();
+                createParticle();
+            }, (duration + delay) * 1000);
+        }
+
+        // 배경음악 제어
+        const bgMusic = document.getElementById('bgMusic');
+        const soundIcon = document.getElementById('soundIcon');
+        let isSoundOn = false;
+        
+        function toggleSound() {
+            if (isSoundOn) {
+                bgMusic.pause();
+                soundIcon.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSI+PHBhdGggZD0iTTE2LjUgMTJjMC0xLjc3LTEuMDItMy4yOS0yLjUtNC4wM3Y4LjA1YzEuNDgtLjczIDIuNS0yLjI1IDIuNS00LjAyek0zIDl2Nmg0bDUgNVY0TDcgOUgzeiIvPjxwYXRoIGQ9Ik0xNCAzLjIzdjIuMDZjMi44OS44NiA1IDMuNTQgNSA2Ljcxcy0yLjExIDUuODUtNSA2LjcxdjIuMDZjNC4wMS0uOTEgNy00LjQ5IDctOC43N3MtMi45OS03Ljg2LTctOC43N3oiLz48L3N2Zz4=";
+            } else {
+                bgMusic.play();
+                soundIcon.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSI+PHBhdGggZD0iTTMgOXY2aDRsNSA1VjRMNyA5SDN6bTEzLjUgM2MwLTEuNzctMS4wMi0zLjI5LTIuNS00LjAzdjguMDVjMS40OC0uNzMgMi41LTIuMjUgMi41LTQuMDJ6TTE0IDMuMjN2Mi4wNmMyLjg5Ljg2IDUgMy41NCA1IDYuNzFzLTIuMTEgNS44NS01IDYuNzF2Mi4wNmM0LjAxLS45MSA3LTQuNDkgNy04Ljc3cy0yLjk5LTcuODYtNy04Ljc3eiIvPjwvc3ZnPg==";
+            }
+            isSoundOn = !isSoundOn;
+            localStorage.setItem('isMusicPlaying', isSoundOn);
+        }
+        
+        // 페이지 로드 시 음악 상태 복원
+        window.addEventListener('load', function() {
+            const isMusicPlaying = localStorage.getItem('isMusicPlaying') === 'true';
+            if (isMusicPlaying) {
+                bgMusic.play();
+                isSoundOn = true;
+                soundIcon.src = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSI+PHBhdGggZD0iTTMgOXY2aDRsNSA1VjRMNyA5SDN6bTEzLjUgM2MwLTEuNzctMS4wMi0zLjI5LTIuNS00LjAzdjguMDVjMS40OC0uNzMgMi41LTIuMjUgMi41LTQuMDJ6TTE0IDMuMjN2Mi4wNmMyLjg5Ljg2IDUgMy41NCA1IDYuNzFzLTIuMTEgNS44NS01IDYuNzF2Mi4wNmM0LjAxLS45MSA3LTQuNDkgNy04Ljc3cy0yLjk5LTcuODYtNy04Ljc3eiIvPjwvc3ZnPg==";
+            }
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>목차 - 포도맛 폴라포</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #091e36;
+            color: white;
+            overflow: hidden;
+        }
+        
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .team-name {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 24px;
+            color: #a64ac9;
+            text-shadow: 0 0 5px rgba(166, 74, 201, 0.5);
+        }
+        
+        .sidebar {
+            position: fixed;
+            top: 60px;
+            right: 0;
+            width: 180px;
+            height: calc(100vh - 60px);
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            z-index: 99;
+        }
+        
+        .sidebar h3 {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #17e9e0;
+        }
+        
+        .team-score {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .score-buttons {
+            display: flex;
+        }
+        
+        .score-btn {
+            width: 25px;
+            height: 25px;
+            margin: 0 2px;
+            border: none;
+            background-color: #a64ac9;
+            color: white;
+            cursor: pointer;
+            border-radius: 50%;
+            font-weight: bold;
+        }
+        
+        .score-btn:hover {
+            background-color: #17e9e0;
+        }
+        
+        .main-container {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-right: 180px; /* sidebar width */
+        }
+        
+        .contents-container {
+            text-align: center;
+            width: 80%;
+            max-width: 800px;
+        }
+        
+        .contents-title {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 42px;
+            margin-bottom: 40px;
+            color: #17e9e0;
+            text-shadow: 0 0 10px rgba(23, 233, 224, 0.5);
+        }
+        
+        .contents-list {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .content-item {
+            background-color: rgba(0, 0, 0, 0.5);
+            border: 2px solid #a64ac9;
+            border-radius: 15px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .content-item:hover {
+            transform: translateX(10px);
+            background-color: rgba(166, 74, 201, 0.3);
+            border-color: #17e9e0;
+        }
+        
+        .content-item:hover::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: shine 1s infinite;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .content-item .number {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 32px;
+            color: #a64ac9;
+            margin-right: 20px;
+            text-shadow: 0 0 5px rgba(166, 74, 201, 0.5);
+        }
+        
+        .content-item .title {
+            font-size: 22px;
+            flex-grow: 1;
+            text-align: left;
+        }
+        
+        .content-item .icon {
+            font-size: 24px;
+            color: #17e9e0;
+        }
+        
+        .nav-arrows {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 30px;
+        }
+        
+        .arrow-btn {
+            background-color: rgba(166, 74, 201, 0.7);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .arrow-btn:hover {
+            background-color: rgba(23, 233, 224, 0.7);
+            transform: scale(1.1);
+        }
+        
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(166, 74, 201, 0.3);
+            animation: float 15s linear infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0); }
+            100% { transform: translateY(-100vh) rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- 배경 파티클 -->
+    <div id="particles"></div>
+    
+    <!-- 상단바 -->
+    <div class="header">
+        <div class="team-name">포도맛 폴라포</div>
+        <div class="navigation">
+            <span id="page-title">목차</span>
+        </div>
+    </div>
+    
+    <!-- 사이드바 - 점수판 -->
+    <div class="sidebar">
+        <h3>팀 점수판</h3>
+        <div id="score-container">
+            <!-- 점수판 내용은 JavaScript로 생성됩니다 -->
+        </div>
+    </div>
+    
+    <!-- 메인 콘텐츠 -->
+    <div class="main-container">
+        <div class="contents-container">
+            <h1 class="contents-title">기후변화 탐험</h1>
+            <div class="contents-list">
+                <div class="content-item" onclick="location.href='climate_what.html'">
+                    <span class="number">1</span>
+                    <span class="title">기후변화란?</span>
+                    <span class="icon">→</span>
+                </div>
+                <div class="content-item" onclick="location.href='climate_problems.html'">
+                    <span class="number">2</span>
+                    <span class="title">기후변화의 문제점</span>
+                    <span class="icon">→</span>
+                </div>
+                <div class="content-item" onclick="location.href='climate_cases.html'">
+                    <span class="number">3</span>
+                    <span class="title">기후변화의 사례</span>
+                    <span class="icon">→</span>
+                </div>
+                <div class="content-item" onclick="location.href='climate_solutions.html'">
+                    <span class="number">4</span>
+                    <span class="title">기후변화의 해결 방안</span>
+                    <span class="icon">→</span>
+                </div>
+                <div class="content-item" onclick="location.href='quiz_final.html'" style="border-color: #17e9e0;">
+                    <span class="number" style="color: #17e9e0;">★</span>
+                    <span class="title">최종 퀴즈 도전!</span>
+                    <span class="icon">→</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 네비게이션 화살표 -->
+    <div class="nav-arrows">
+        <button class="arrow-btn" title="이전 페이지" onclick="location.href='loading.html'">◀</button>
+        <button class="arrow-btn" title="다음 페이지" onclick="location.href='climate_what.html'">▶</button>
+    </div>
+    
+    <script>
+        // 팀 점수판 생성
+        const scoreContainer = document.getElementById('score-container');
+        
+        for (let i = 1; i <= 10; i++) {
+            const teamScore = document.createElement('div');
+            teamScore.className = 'team-score';
+            
+            const teamName = document.createElement('span');
+            teamName.textContent = `${i}팀`;
+            
+            const scoreValue = document.createElement('span');
+            scoreValue.textContent = localStorage.getItem(`team-${i}-score`) || '0';
+            scoreValue.id = `team-${i}-score`;
+            
+            const scoreButtons = document.createElement('div');
+            scoreButtons.className = 'score-buttons';
+            
+            const minusBtn = document.createElement('button');
+            minusBtn.className = 'score-btn';
+            minusBtn.textContent = '-';
+            minusBtn.onclick = function() {
+                updateScore(i, -1);
+            };
+            
+            const plusBtn = document.createElement('button');
+            plusBtn.className = 'score-btn';
+            plusBtn.textContent = '+';
+            plusBtn.onclick = function() {
+                updateScore(i, 1);
+            };
+            
+            scoreButtons.appendChild(minusBtn);
+            scoreButtons.appendChild(plusBtn);
+            
+            teamScore.appendChild(teamName);
+            teamScore.appendChild(scoreValue);
+            teamScore.appendChild(scoreButtons);
+            
+            scoreContainer.appendChild(teamScore);
+        }
+        
+        // 점수 업데이트 함수
+        function updateScore(teamNum, change) {
+            const scoreElem = document.getElementById(`team-${teamNum}-score`);
+            let currentScore = parseInt(scoreElem.textContent);
+            currentScore += change;
+            
+            // 점수는 0 미만으로 내려가지 않도록
+            if (currentScore < 0) currentScore = 0;
+            
+            scoreElem.textContent = currentScore;
+            
+            // 로컬 스토리지에 점수 저장
+            localStorage.setItem(`team-${teamNum}-score`, currentScore);
+        }
+        
+        // 콘텐츠 아이템 효과
+        const contentItems = document.querySelectorAll('.content-item');
+        contentItems.forEach((item, index) => {
+            item.style.animationDelay = `${index * 0.2}s`;
+            item.style.opacity = '0';
+            item.style.transform = 'translateX(-20px)';
+            
+            setTimeout(() => {
+                item.style.transition = 'all 0.5s ease';
+                item.style.opacity = '1';
+                item.style.transform = 'translateX(0)';
+            }, index * 200);
+        });
+        
+        // 배경 파티클 생성
+        const particlesContainer = document.getElementById('particles');
+        
+        for (let i = 0; i < 20; i++) {
+            createParticle();
+        }
+        
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            
+            // 랜덤 크기, 위치, 지연시간
+            const size = Math.random() * 30 + 10;
+            const left = Math.random() * 100;
+            const duration = Math.random() * 15 + 5;
+            const delay = Math.random() * 5;
+            
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.left = `${left}%`;
+            particle.style.bottom = '-50px';
+            particle.style.opacity = Math.random() * 0.5 + 0.1;
+            particle.style.animationDuration = `${duration}s`;
+            particle.style.animationDelay = `${delay}s`;
+            
+            particlesContainer.appendChild(particle);
+            
+            // 애니메이션 완료 후 재생성
+            setTimeout(() => {
+                particle.remove();
+                createParticle();
+            }, (duration + delay) * 1000);
+        }
+    </script>
+</body>
+</html>
